@@ -1,25 +1,41 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import Contact from "./components/Contact";
+import "./styles/app.css";
+import ContactAdder from "./components/ContactAdder";
+import NavBar from "./components/NavBar";
+const App = () => {
+  const getContacts = JSON.parse(localStorage.getItem("contacts"));
+  const [contacts, setContacts] = useState(getContacts ? getContacts : []);
 
-function App() {
+  const addContactData = (contactData) => {
+    setContacts([...contacts, contactData]);
+    localStorage.setItem(
+      "contacts",
+      JSON.stringify([...contacts, contactData])
+    );
+  };
+  const clearAllContacts = () => {
+    localStorage.clear();
+    setContacts([]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <NavBar />
+      <div className="contact_adder">
+        <ContactAdder onContactAdded={addContactData} />
+      </div>
+      <div className="contact_list">
+        <h3>Contact List:</h3>
+        {contacts.map((data) => (
+          <Contact key={data.id} data={data} />
+        ))}
+        <button onClick={clearAllContacts} style={{ background: "#cc0800" }}>
+          Clear all contacts
+        </button>
+      </div>
+    </>
   );
-}
+};
 
 export default App;
